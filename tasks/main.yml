@@ -63,12 +63,11 @@
   shell: getcap /usr/local/bin/caddy | grep cap_net_bind_service
   failed_when: False
   changed_when: False
-  when: not systemd.stat.exists
   register: caddy_bind_cap
 
 - name: Set capability on the binary file to be able to bind to TCP port <1024
   command: setcap cap_net_bind_service=+ep /usr/local/bin/caddy
-  when: not systemd.stat.exists and caddy_bind_cap.rc > 0
+  when: caddy_bind_cap.rc > 0
 
 - name: Start Caddy service
   service: name=caddy state=started enabled=yes
